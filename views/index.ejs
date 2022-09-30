@@ -12,29 +12,13 @@
 
 <body>
 	<section class="todoapp">
-		<nav class="nav">
-			<ul>
-				<li class="user">
-					<%= user._json['username'] || "VOID" %>
-				</li>
-				<li>
-					<a href="/activities">
-						<%= accessToken || "VOID" %>
-					</a>
-				</li>
-				<li>
-					<form action="/logout" method="post">
-						<button class="logout" type="submit">Sign out</button>
-						<input type="hidden" name="_csrf" value="<%= csrfToken %>">
-					</form>
-				</li>
-			</ul>
-		</nav>
+
+		<%- include('partials/logged-in-nav.ejs') %>
 
 		<button id="get">Get Activities</button>
 
 		<div id="app"></div>
-
+	</section>
 </body>
 <script>
 	// var User = <%= user %>
