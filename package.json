@@ -10,12 +10,11 @@
     "sqlite"
   ],
   "scripts": {
-    "start": "node ./bin/www"
+    "dev": "node ./bin/www"
   },
   "dependencies": {
     "@riderize/passport-strava-oauth2": "2.0.0",
     "connect-ensure-login": "^0.1.1",
-    "connect-sqlite3": "^0.9.13",
     "cookie-parser": "~1.4.4",
     "csurf": "^1.11.0",
     "debug": "~2.6.9",
@@ -24,11 +23,10 @@
     "express": "~4.16.1",
     "express-session": "^1.17.2",
     "http-errors": "~1.6.3",
-    "mkdirp": "^1.0.4",
-    "morgan": "~1.9.1",
+    "morgan": "1.10.0",
     "passport": "^0.6.0",
     "passport-facebook": "^3.0.0",
-    "pluralize": "^8.0.0",
-    "sqlite3": "^5.0.2"
+    "pluralize": "8.0.0",
+    "strava-v3": "2.1.0"
   }
 }

@@ -18,6 +18,11 @@
 					<%= user._json['username'] || "VOID" %>
 				</li>
 				<li>
+					<a href="/activities">
+						<%= accessToken || "VOID" %>
+					</a>
+				</li>
+				<li>
 					<form action="/logout" method="post">
 						<button class="logout" type="submit">Sign out</button>
 						<input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -26,11 +31,48 @@
 			</ul>
 		</nav>
 
+		<button id="get">Get Activities</button>
+
+		<div id="app"></div>
 
 </body>
 <script>
 	// var User = <%= user %>
-	console.log(JSON.parse('<%- JSON.stringify(user._json) %>'));
+	// console.log(JSON.parse('<%- JSON.stringify(user._json) %>'));
+
+	const getButton = document.getElementById('get');
+	let content = '';
+	getButton.addEventListener('click', async () => {
+		const response = await fetch('/activities');
+		const json = await response.json();
+		console.log({ json });
+		let activities = null;
+		if (json.activities.length > 0) {
+			activities = json.activities.map((activity) => {
+				return `<tr>
+					<td>${activity.id}</td>
+					<td>${activity.name}</td>
+					<td>${activity.type}</td>
+					<td>${activity.sport_type}</td>
+					<td>${activity.average_speed}</td>
+					<td>${activity.max_speed}</td>
+					</tr>`;
+			});
+
+			console.log({ activities: activities.join(',').replaceAll(',', '') })
+			app.innerHTML = `<table>
+				<thead><tr>
+					<th>ID</th>
+					<th>Name</th>
+					<th>Type</th>
+					<th>Sport_type</th>
+					<th>average speed</th>
+					<th>max speed</th>
+					</tr></thead><tbody>
+				${activities.join(',').replaceAll(',', '')}</tbody></table>`;
+
+		}
+	});
 </script>
 
 </html>

@@ -11,10 +11,11 @@ var logger = require("morgan");
 
 // pass the session to the connect sqlite3 module
 // allowing it to inherit from session.Store
-var SQLiteStore = require("connect-sqlite3")(session);
+// var SQLiteStore = require("connect-sqlite3")(session);
 
 var indexRouter = require("./routes/index");
 var authRouter = require("./routes/auth");
+var activitiesRouter = require("./routes/activities");
 
 var app = express();
 
@@ -34,10 +35,6 @@ app.use(
     secret: "keyboard cat",
     resave: false, // don't save session if unmodified
     saveUninitialized: false, // don't create session until something stored
-    store: new SQLiteStore({
-      db: "sessions.db",
-      dir: "./var/db",
-    }),
   })
 );
 app.use(csrf());
@@ -56,6 +53,7 @@ app.use(function (req, res, next) {
 
 app.use("/", indexRouter);
 app.use("/", authRouter);
+app.use("/", activitiesRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
