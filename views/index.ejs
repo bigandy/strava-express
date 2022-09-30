@@ -1,62 +1,96 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Strava Express</title>
+    <link rel="stylesheet" href="/css/base.css" />
+    <link rel="stylesheet" href="/css/index.css" />
+    <link rel="stylesheet" href="/css/app.css" />
+  </head>
 
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Express • TodoMVC</title>
-	<link rel="stylesheet" href="/css/base.css">
-	<link rel="stylesheet" href="/css/index.css">
-	<link rel="stylesheet" href="/css/app.css">
-</head>
+  <body>
+    <section class="stravaapp">
+      <%- include('partials/logged-in-nav.ejs') %>
 
-<body>
-	<section class="todoapp">
+      <button id="get">Get Activities</button>
 
-		<%- include('partials/logged-in-nav.ejs') %>
+      <div id="app"></div>
+    </section>
+  </body>
+  <script>
+    // var User = <%= user %>
+    // console.log(JSON.parse('<%- JSON.stringify(user._json) %>'));
 
-		<button id="get">Get Activities</button>
+    const getButton = document.getElementById("get");
+    let content = "";
+    getButton.addEventListener("click", async () => {
+      const response = await fetch("/activities");
+      const json = await response.json();
+    //   console.log({ json });
+      let activities = null;
 
-		<div id="app"></div>
-	</section>
-</body>
-<script>
-	// var User = <%= user %>
-	// console.log(JSON.parse('<%- JSON.stringify(user._json) %>'));
+      const app = document.getElementById("app");
+      if (json.activities && json.activities.length > 0) {
+        activities = json.activities.map((activity) => {
+          return `<tr>
+       					<td>${activity.id}</td>
+       					<td>${activity.name}</td>
+       					<td>${activity.type}</td>
+       					<td>${activity.sport_type}</td>
+       					<td>${activity.average_speed}</td>
+       					<td>${activity.max_speed}</td>
+       					</tr>`;
+        });
 
-	const getButton = document.getElementById('get');
-	let content = '';
-	getButton.addEventListener('click', async () => {
-		const response = await fetch('/activities');
-		const json = await response.json();
-		console.log({ json });
-		let activities = null;
-		if (json.activities.length > 0) {
-			activities = json.activities.map((activity) => {
-				return `<tr>
-					<td>${activity.id}</td>
-					<td>${activity.name}</td>
-					<td>${activity.type}</td>
-					<td>${activity.sport_type}</td>
-					<td>${activity.average_speed}</td>
-					<td>${activity.max_speed}</td>
-					</tr>`;
-			});
+        // console.log({ activities: activities.join(',').replaceAll(',', '') })
+        app.innerHTML = `<table>
+       				<thead><tr>
+       					<th>ID</th>
+       					<th>Name</th>
+       					<th>Type</th>
+       					<th>Sport_type</th>
+       					<th>average speed</th>
+       					<th>max speed</th>
+       					</tr></thead><tbody>
+       				${activities.join(",").replaceAll(",", "")}</tbody></table>`;
 
-			console.log({ activities: activities.join(',').replaceAll(',', '') })
-			app.innerHTML = `<table>
-				<thead><tr>
-					<th>ID</th>
-					<th>Name</th>
-					<th>Type</th>
-					<th>Sport_type</th>
-					<th>average speed</th>
-					<th>max speed</th>
-					</tr></thead><tbody>
-				${activities.join(',').replaceAll(',', '')}</tbody></table>`;
+        const convertButton = document.createElement("button"); // is a node
+        convertButton.innerHTML = "Convert?";
+        app.appendChild(convertButton);
 
+        convertButton.addEventListener("click", () => {
+          convert(json.activities);
+        });
+      }
+    });
+
+    async function convert(activities) {
+		try {
+			activities = activities.map(({ id, name }) => { 
+				return { id, name };
+		 });
+      console.log("convert them all", JSON.stringify(activities));
+
+      const post = await fetch("/activities-reset", {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+    	// mode: 'cors',
+        body: JSON.stringify({activities}),
+		// credentials: 'same-origin',
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+
+	  console.log({post: await post.json()})
+		} catch (error) {
+			console.error(error);
 		}
-	});
-</script>
+      
 
+	  
+    }
+
+  </script>
 </html>

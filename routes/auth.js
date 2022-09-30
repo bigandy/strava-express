@@ -1,5 +1,6 @@
 var express = require("express");
 var passport = require("passport");
+const { route } = require("./activities");
 const StravaStrategy =
   require("@riderize/passport-strava-oauth2").Strategy;
 
@@ -41,6 +42,10 @@ router.get("/login", function (req, res, next) {
   res.render("login");
 });
 
+router.post('/thingy', function (req, res, next) {
+  res.status(500);
+})
+
 router.get(
   "/login/federated/strava",
   passport.authenticate("strava", {
@@ -53,9 +58,6 @@ router.get(
 router.get(
   "/oauth2/redirect/strava",
   passport.authenticate("strava", {
-    // scope: [
-    //   "profile:read_all,activity:read_all,activity:write",
-    // ],
     successReturnToOrRedirect: "/",
     failureRedirect: "/login",
   })

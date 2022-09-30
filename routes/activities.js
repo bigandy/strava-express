@@ -12,12 +12,12 @@ async function fetchActivities(accessToken) {
 
     const payload = await strava.athlete
       .listActivities({
-        page: 1,
+        page: 3,
         per_page: 100,
       })
       .filter(
         (act) =>
-          act.average_speed < 2.5 &&
+          act.average_speed < 2 &&
           act.sport_type === "Run"
       )
       .map(
@@ -90,9 +90,12 @@ router.get("/activities", async function (req, res, next) {
   });
 });
 
+
+
+
 /* GET activities page. */
-router.post(
-  "/activity/:id",
+router
+  .post('/activities-reset',
   async function (req, res, next) {
     if (!req.user) {
       return res.redirect("/");
@@ -100,7 +103,23 @@ router.post(
 
     res.locals.filter = null;
 
-    console.log({ req });
+    // console.log({ req });
+
+    console.log(req.body);
+
+
+      await req?.body?.activities.reduce((promiseChain, currentActivity) => {
+        return promiseChain.then(async () => {
+          var args = {
+            id: currentActivity?.id,
+            name: currentActivity?.newName,
+            sport_type: "Walk",
+            type: "Walk",
+          };
+          await strava.activities.update(args);
+          console.log('updated');
+        });
+    }, Promise.resolve());
 
     // let activities = null;
     // if (req?.user?.accessToken) {
@@ -109,10 +128,11 @@ router.post(
     //   );
     // }
 
-    console.log({ activities });
+    // console.log({ activities });
 
     res.send({
       hello: "world",
+      activities: req?.body?.activities,
       // user: req?.user?.user ?? "empty-user",
       // accessToken: req?.user?.accessToken ?? "empty-token",
       // activities: activities,

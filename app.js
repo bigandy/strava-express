@@ -5,7 +5,7 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var session = require("express-session");
-var csrf = require("csurf");
+// var csrf = require("csurf");
 var passport = require("passport");
 var logger = require("morgan");
 
@@ -37,7 +37,7 @@ app.use(
     saveUninitialized: false, // don't create session until something stored
   })
 );
-app.use(csrf());
+// app.use(csrf());
 app.use(passport.authenticate("session"));
 app.use(function (req, res, next) {
   var msgs = req.session.messages || [];
@@ -47,7 +47,7 @@ app.use(function (req, res, next) {
   next();
 });
 app.use(function (req, res, next) {
-  res.locals.csrfToken = req.csrfToken();
+  // res.locals.csrfToken = req.csrfToken();
   next();
 });
 
