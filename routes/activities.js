@@ -14,8 +14,11 @@ async function fetchActivities(accessToken) {
       .listActivities({
         page: 3,
         per_page: 100,
-      })
-      .filter(
+      });
+
+    console.log({payload})
+      
+    const filtered = payload.filter(
         (act) =>
           act.average_speed < 2 &&
           act.sport_type === "Run"
@@ -28,6 +31,7 @@ async function fetchActivities(accessToken) {
           average_speed,
           max_speed,
           id,
+          
         }) => {
           return {
             id,
@@ -54,7 +58,7 @@ async function fetchActivities(accessToken) {
     //   console.log({ updated });
     // }
 
-    return payload;
+    return filtered;
   } catch (error) {
     console.error("error in fetchActivities", error);
     return null;
